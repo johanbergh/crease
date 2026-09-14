@@ -5,29 +5,11 @@ import pymysql
 import os
 
 # Database Connection
-'''connection = pymysql.connect(
+connection = pymysql.connect(
     host=os.environ.get('HOST'),
     user=os.environ.get('USER'),
-    password=os.environ.get('PASS'),
-    database=os.environ.get('DB'),
-    cursorclass=pymysql.cursors.DictCursor,
-    autocommit=True
-)'''
-'''connection = pymysql.connect(
-    host="localhost",
-    user="devlc",
-    password="lcdev123",
-    database="lc_new",
-    cursorclass=pymysql.cursors.DictCursor,
-    autocommit=True
-)
-cursor = connection.cursor()'''
-
-connection = pymysql.connect(
-    host="127.0.0.1",
-    user="root",
-    #password="lcdev123",
-    database="lc_new",
+    #password=os.environ.get('PASSWORD'),
+    database=os.environ.get('DATABASE'),
     cursorclass=pymysql.cursors.DictCursor,
     autocommit=True
 )
