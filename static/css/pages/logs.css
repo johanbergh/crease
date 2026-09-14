@@ -1,0 +1,19 @@
+.filter-panel {
+    box-shadow: 0 3px 8px 0 rgba(0, 0, 1, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.3);
+    border: 0.2rem solid rgb(56, 56, 56);
+    padding: 1rem;
+}
+
+.panels {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    justify-content: center;
+}
+
+.panels select {
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    flex-basis: 45%;
+}

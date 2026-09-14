@@ -1,0 +1,68 @@
+/* DARK MODE CSS */
+
+.dark-mode {
+    background-color: #1c1b1f;
+    color: white;
+}
+
+/* Navigation Bar */
+.dark-mode header {
+    background-color: #283593;
+}
+
+/* Global */
+.dark-mode .container-grey {
+    background-color: #232226;
+}
+
+/* Home Page */
+.dark-mode .button-1 {
+    color: #283593;
+}
+.dark-mode .button-1:hover {
+    background-color: rgb(176, 176, 176);
+    color: #283593;
+}
+
+/* Gameblock */
+.dark-mode .gameblock {
+    box-shadow: none;
+}
+
+.dark-mode .gameblock-heading {
+    background-color: #283593;
+}
+
+.dark-mode .gameblock-body {
+    border: 3px solid #283593;
+}
+
+.dark-mode .gameblock-score {
+    color: rgb(255, 255, 255);
+}
+
+.dark-mode .gameblock-footer {
+    border-bottom: 3px solid #283593;
+    border-left: 3px solid #283593;
+    border-right: 3px solid #283593;
+    background-color: rgb(55, 55, 55);
+}
+
+/* Live Games */
+.dark-mode .lbl-toggle {
+    background-color: #283593;
+}
+
+.dark-mode .collapsible-content .content-inner {
+    background-color: rgb(40, 53, 147, 0.3);
+    border-bottom: 3px solid #283593;
+}
+
+.dark-mode .scorecard-header {
+    background-color: #283593;
+}
+
+.dark-mode .scorecard-bg {
+    background-color: rgb(40, 53, 147, 0.3);
+    border-bottom: 3px solid #283593;
+}

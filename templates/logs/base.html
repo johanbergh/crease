@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>LiveCricket | Live Matches</title>
+        <link rel="icon" type="image/x-icon" href="/static/images/assets/lc-logo.ico">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/livegame.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/pages/logs.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/dark.css') }}">
+        <script src="https://kit.fontawesome.com/77197ba462.js" crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <header>
+            <div class="logo">
+                <h2>LiveCricket</h2>
+            </div>
+
+            <div class="navbar-actions">
+                <button class="navbar-icon" onclick="color_mode()">
+                    <div id="icon">
+                        <i class="fa-solid fa-moon fa-xl"></i>
+                    </div>
+                </button>
+            </div>
+            
+            <div class="navbar">
+                <a href="/" class="navbox">Home</a>
+                <a href="matches" class="navbox">Live Games</a>
+                <div class="dropdown navbox">
+                    <a class="dropbtn">Analytics</a>
+                    <div class="dropdown-content">
+                        <a href="logs">Logs</a>
+                        <a href="statistics">Stats</a>
+                    </div> 
+                </div>
+                <a href="account" class="navbox">Account</a>
+            </div>
+        </header>
+
+        <!-- Log Search Container-->
+        <div class="container">
+            <div class="row">
+                <h2>Logs</h2>
+                <div class="filter-panel">
+                    <h3>Search using filters</h3>
+                    <form method="POST" action="/logs">
+                        <div class="panels">
+                            <select name="structure" id="structure">
+                                <option value="none" selected disabled hidden>Structure</option>
+                                {% for structure in structures %}
+                                    <option value="{{structure}}">{{structure}}</option>
+                                {% endfor %}
+                            </select>
+
+                            <select name="region" id="region">
+                                <option value="none" selected disabled hidden>Region</option>
+                                {% for region in regions %}
+                                    <option value="{{region}}">{{region}}</option>
+                                {% endfor %}
+                            </select>
+
+                            <select name="league" id="league">
+                                <option value="none" selected disabled hidden>League</option>
+                                {% for league in leagues %}
+                                    <option value="{{league}}">{{league}}</option>
+                                {% endfor %}
+                            </select>
+
+                            <select name="season" id="season">
+                                <option value="none" selected disabled hidden>Season</option>
+                                {% for season in seasons %}
+                                    <option value="{{season}}">{{season}}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <center>
+                            <button type="submit" class="button-2">Find Log</button>
+                        </center>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        {% block log_table %}{% endblock %}
+
+        <!-- Footer -->
+        <footer>
+            <h2 style="text-align: center;">LiveCricket</h2>
+
+            <div class="box">
+                <li><a href="/">Home</a></li>
+                <li><a href="matches">Live Games</a></li>
+                <li><a href="fixtures">Fixtures & Results</a></li>
+                <li><a href="account">Account Management</a></li>
+                <br>
+                <li><a href="tos">Terms & Conditions</a></li>
+                <li><a href="privacy">Privacy Policy</a></li>
+                <li><a href="contact">Contact Us</a></li>
+            </div>
+
+            <p style="text-align: center; font-size: 10px;">&copy; OptiTech 2024</p>
+        </footer>
+        <script src="/static/js/theme.js"></script>
+    </body>
+</html>

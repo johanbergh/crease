@@ -1,0 +1,57 @@
+{% extends 'logs/base.html' %}
+
+{% block log_table %}
+{% if logs %}
+<!--Log-->
+<div class="container" style="margin-left: 2rem; margin-right: 2rem;">
+    <!--Current Batsmen & Bowlers-->
+    <div class="wrap-collabsible logs">
+        <label class="scorecard-header" style="text-align: center;">{{info.leagueName}}</label>
+        <div class="scorecard-bg">
+            <div class="content-inner">
+                <table>
+                    <tr>
+                        <th>Pos #</th>
+                        <th>Team</th>
+                        <th>P</th>
+                        <th>BP</th>
+                        <th>W</th>
+                        <th>L</th>
+                        <th>D</th>
+                        <th>NR</th>
+                        <th>TD</th>
+                        <th>PEN</th>
+                        <th>RR</th>
+                        <th>NRR</th>
+                        <th>Tot</th>
+                    </tr>
+                    
+                    {% for team in logs %}
+                    <tr>
+                        <th>{{loop.index}}</th>
+                        <td style="display: flex; align-items: center;">
+                            <img src="/static/images/logos/{{team.image}}" style="width: 50px; height: 50px; margin-right: 5px;">
+                            {{team.teamName}}
+                        </td>
+                        <td>{{team.matches}}</td>
+                        <td>{{team.bonusPoints}}</td>
+                        <td>{{team.win}}</td>
+                        <td>{{team.loss}}</td>
+                        <td>{{team.draw}}</td>
+                        <td>{{team.tied}}</td>
+                        <td>{{team.noResult}}</td>
+                        <td>{{team.penalty}}</td>
+                        <td>{{team.rr}}</td>
+                        <td>{{team.nrr}}</td>
+                        <td>{{team.totalPoints}}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+    <p>Select criteria above.</p>
+{% endif %}
+{% endblock %}

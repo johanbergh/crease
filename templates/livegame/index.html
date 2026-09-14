@@ -1,0 +1,477 @@
+{% extends 'livegame/base.html' %}
+{% block live_gameblock %}
+
+<!--If game does not exist-->
+{% if not game.game_exist %}
+    <div class="error">
+        <p>Failed to load game details, no game ID provided or game ID does not exist.</p>
+    </div>
+{% endif %}
+
+<!--Live Game-->
+<div class="container" id="livegame-updates">
+    <div class="row">
+        <!--Games Div / All games listed here-->
+        <div id="games">
+            <!--Gameblock-->
+            <!--Gameblock Header-->
+            <div class="gameblock-heading text-center">
+                <div class="gameblock-title">
+                    <h3>{{game.teamA}}</h3>
+                </div>
+                <div class="gameblock-divider">
+                    vs
+                </div>
+                <div class="gameblock-title">
+                    <h3>{{game.teamB}}</h3>
+                </div>
+            </div>
+            <!--Gameblock Body-->
+            <div class="gameblock-body">
+                <img class="gameblock-teamlogo" src="/static/images/logos/{{game.teamA_image}}"> 
+                <img class="gameblock-teamlogo" src="/static/images/logos/{{game.teamB_image}}" style="float: right;">
+        
+                <!--Team Totals-->
+                <div class="gameblock-parent text-center">
+                    <div class="gameblock-score" style="border-right: 3px solid grey">
+                        {{game.scores.teama_score}}/{{game.scores.teama_wkts}}
+                    </div>
+        
+                    <div class="gameblock-score">
+                        {{game.scores.teamb_score}}/{{game.scores.teamb_wkts}}
+                    </div>
+                </div>
+        
+                <!--Stats-->
+                <!--Overs-->
+                <div class="gameblock-parent">
+                    <div class="gameblock-stats text-right">
+                        {{game.scores.teama_overs}}
+                    </div>
+                    <div class="gameblock-statsdiv">
+                        Overs
+                    </div>
+                    <div class="gameblock-stats text-left">
+                        {{game.scores.teamb_overs}}
+                    </div>
+                </div>
+        
+                <!--Extras-->
+                <div class="gameblock-parent">
+                    <div class="gameblock-stats text-right">
+                        {{game.scores.teama_extras}}
+                    </div>
+                    <div class="gameblock-statsdiv">
+                        Extras
+                    </div>
+                    <div class="gameblock-stats text-left">
+                        {{game.scores.teamb_extras}}
+                    </div>
+                </div>
+        
+                <!--Run Rate-->
+                <div class="gameblock-parent text-right">
+                    <div class="gameblock-stats">
+                        {% if game.scores.teama_score == 0 %}
+                            0
+                        {% else %}
+                            {{(game.scores.teama_score / game.scores.teama_overs) | round(2, 'floor')}}
+                        {% endif %}
+                    </div>
+                    <div class="gameblock-statsdiv">
+                        Run Rate
+                    </div>
+                    <div class="gameblock-stats text-left">
+                        {% if game.scores.teamb_score == 0 %}
+                            0
+                        {% else %}
+                            {{(game.scores.teamb_score / game.scores.teamb_overs) | round(2, 'floor')}}
+                        {% endif %}
+                    </div>
+                </div>
+        
+                <!--Game Status-->
+                {% if game.progress == 2 and game.scores.first_team_inning != game.scores.current_team_inning %}
+                <div class="gameblock-status">
+                    {% if game.scores.current_team_inning == 1 %}
+                        {% set current_score = game.scores.teama_score %}
+                        {% set overs_bowled = game.scores.teama_overs %}
+                    {% else %}
+                        {% set current_score = game.scores.teamb_score %}
+                        {% set overs_bowled = game.scores.teamb_overs %}
+                    {% endif %}
+                    {% set remaining_overs = game.scores.total_overs - overs_bowled %}
+                    {% set runs_needed = game.scores.target - current_score %}
+                    {{ game.status }} ({{ (runs_needed / remaining_overs) | round(3, 'floor') }} RPO) 
+                </div>
+        
+                {% else %}
+                <div class="gameblock-status">
+                    {{ game.status }}
+                </div>
+                {% endif %}
+            </div>
+        
+            <!--Gameblock Footer-->
+            <div class="gameblock-footer">
+                <span><i class="fa-solid fa-calendar-days"></i> {{game.datetime}}</span>
+                <br>
+                <span><i class="fa-sharp fa-solid fa-location-dot"></i> {{game.venue}}</span>
+                <span><b>Type: </b>{{game.format}}</span>
+                <span><b>Toss: </b>{{game.toss}}</span>
+            </div>
+        </div>
+
+        <!--Game Stats Menu-->
+        <div class="container" style="margin-left: -2rem; margin-right: -2rem;">
+            <!--Current Batsmen & Bowlers-->
+            <div class="wrap-collabsible">
+                <input id="collapsible3" class="toggle" type="checkbox">
+                <label for="collapsible3" class="lbl-toggle" tabindex="0"><i class="fa-solid fa-user"></i> Current Batsmen & Bowlers</label>
+                <div class="collapsible-content">
+                    <div class="content-inner table-row">
+
+                        <!--Batsmen-->
+                        <div class="table-inner">
+                            <table>
+                                <tr>
+                                    <th>Batsmen</th>
+                                    <th>R</th>
+                                    <th>B</th>
+                                    <th>4s</th>
+                                    <th>6s</th>
+                                    <th>SR</th>
+                                </tr>
+                                {% for batsmen in current_batsmen %}
+                                <tr>
+                                    <th>{{batsmen.name}} {{batsmen.surname}}</th>
+                                    <td>{{batsmen.runs}}</td>
+                                    <td>{{batsmen.balls_faced}}</td>
+                                    <td>{{batsmen.fours}}</td>
+                                    <td>{{batsmen.sixes}}</td>
+                                    <td>{% if batsmen.balls_faced == 0 %}
+                                            0
+                                        {% else %}
+                                            {{(batsmen.runs / batsmen.balls_faced * 100) | round(0, 'floor') }}
+                                        {% endif %}</td>
+                                {% endfor %}
+                            </table>
+                        </div>
+
+                        <!--Bowlers-->
+                        <div class="table-inner">
+                            <table>
+                                <tr>
+                                    <th>Bowlers</th>
+                                    <th>O</th>
+                                    <th>M</th>
+                                    <th>R</th>
+                                    <th>W</th>
+                                    <th>Ec</th>
+                                </tr>
+
+                                {% for bowler in current_bowlers %}
+                                <tr>
+                                    <th>{{bowler.name}} {{bowler.surname}}</th>
+                                    <td>{{bowler.overs}}</td>
+                                    <td>{{bowler.maidens}}</td>
+                                    <td>{{bowler.runs}}</td>
+                                    <td>{{bowler.wickets}}</td>
+                                    <td>{{(bowler.runs / bowler.overs) | round(2, 'floor')}}</td>
+                                </tr>
+                                {% endfor %}
+
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <hr>
+        </div>
+
+        <!--Scorecard-->
+        <div class="container" style="margin-left: -2rem; margin-right: -2rem;">
+            <!--Current Batsmen & Bowlers-->
+            <center>
+                <button id="btn-1st-inn" class="innings selected" onclick="showInnings(1, this)">1st Innings</button>
+                {% if second_bat %}
+                    <button id="btn-2nd-inn" class="innings" onclick="showInnings(2, this)">2nd Innings</button>
+                {% endif %}
+            </center>
+
+            <div class="wrap-collabsible">
+                <label class="scorecard-header"><i class="fa-solid fa-chart-column"></i> Scorecard</label>
+                <div class="scorecard-bg">
+                    <div class="content-inner">
+                        <!-- 1st INNINGS -->
+                        <div id="innings-1" class="innings-content" style="display: block;">
+                            {% if game.scores.first_team_inning == 1 %}
+                                <h3>{{game.teamA}} - Batting</h3>
+                            {% else %}
+                                <h3>{{game.teamB}} - Batting</h3>
+                            {% endif %}
+                            <!--Batsmen - Team A-->
+                            <table>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Batsmen</th>
+                                    <th></th>
+                                    <th>R</th>
+                                    <th>B</th>
+                                    <th>4s</th>
+                                    <th>6s</th>
+                                    <th>SR</th>
+                                </tr>
+
+                                {% set ns = namespace(total_runs=0, total_balls=0, total_4=0, total_6=0) %}
+                                {% for batter in first_bat %}
+                                    {% set ns.total_runs = ns.total_runs + batter.runs | int %}
+                                    {% set ns.total_balls = ns.total_balls + batter.balls_faced | int %}
+                                    {% set ns.total_4 = ns.total_4 + batter.fours | int %}
+                                    {% set ns.total_6 = ns.total_6 + batter.sixes | int %}
+                                    <tr>
+                                        <th>{{loop.index}}</th>
+                                        <td>{{batter.name[0]}} {{batter.surname}}
+                                            {% if game.scores.first_team_inning == 1 %}
+                                                {% if batter.name + ' ' + batter.surname == captain_a %}
+                                                (C)
+                                                {% endif %}
+                                            {% else %}
+                                                {% if batter.name + ' ' + batter.surname == captain_b %}
+                                                (C)
+                                                {% endif %}
+                                            {% endif %}
+
+                                            {% if game.scores.first_team_inning == 1 %}
+                                                {% if batter.name + ' ' + batter.surname == wk_a %}
+                                                (WK)
+                                                {% endif %}
+                                            {% else %}
+                                                {% if batter.name + ' ' + batter.surname == wk_b %}
+                                                (WK)
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{batter.method}}</td>
+                                        <td>{{batter.runs}}</td>
+                                        <td>{{batter.balls_faced}}</td>
+                                        <td>{{batter.fours}}</td>
+                                        <td>{{batter.sixes}}</td>
+                                        <td>{{(batter.runs / batter.balls_faced * 100) | round(0, 'floor') }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <th>EXTRAS</td>
+                                    <td>0 (b 0, lb 0, nb 0, wd 0)</td>
+                                </tr>
+
+                                <tr style="font-weight: bold;">
+                                    <th>TOTAL</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ns.total_runs}}</td>
+                                    <td>{{ns.total_balls}}</td>
+                                    <td>{{ns.total_4}}</td>
+                                    <td>{{ns.total_6}}</td>
+                                </tr>
+                            </table>
+                            <hr>
+                            <!--Fall of Wickets - Team A-->
+                            {% if game.scores.first_team_inning == 1 %}
+                                <h3>{{game.teamA}} - Fall of Wickets</h3>
+                            {% else %}
+                                <h3>{{game.teamB}} - Fall of Wickets</h3>
+                            {% endif %}
+                            <!--Batsmen-->
+                            <table>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Batsmen</th>
+                                    <th>FOW</th>
+                                </tr>
+                                {% if first_fow %}
+                                    {% for fow in first_fow %}
+                                    <tr>
+                                        <th>{{loop.index}}</th>
+                                        <td>{{fow.name}} {{fow.surname}}</td>
+                                        <td>{{fow.team_runs}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </table>
+                            <hr>
+                            <!--Bowlers - Team B-->
+                            {% if game.scores.first_team_inning == 1 %}
+                                <h3>{{game.teamB}} - Bowling</h3>
+                            {% else %}
+                                <h3>{{game.teamA}} - Bowling</h3>
+                            {% endif %}
+                            <table>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Bowler</th>
+                                    <th>O</th>
+                                    <th>M</th>
+                                    <th>R</th>
+                                    <th>W</th>
+                                    <th>NB</th>
+                                    <th>WB</th>
+                                    <th>Ec</th>
+                                </tr>
+                                {% for bowler in first_bowling %}
+                                <tr>
+                                    <th>{{loop.index}}</th>
+                                    <td>{{bowler.name}} {{bowler.surname}}</td>
+                                    <td>{{bowler.overs}}</td>
+                                    <td>{{bowler.maidens}}</td>
+                                    <td>{{bowler.runs}}</td>
+                                    <td>{{bowler.wickets}}</td>
+                                    <td>{{bowler.noballs}}</td>
+                                    <td>{{bowler.wides}}</td>
+                                    <td>{{(bowler.runs / bowler.overs) | round(2, 'floor')}}</td>
+                                {% endfor %}
+                                </tr>
+                            </table>
+                            <hr>
+                        </div> 
+
+                        <!--2nd INNINGS-->
+                        <div id="innings-2" class="innings-content" style="display: none;">
+                            {% if game.scores.first_team_inning == 1 %}
+                                <h3>{{game.teamB}} - Batting</h3>
+                            {% else %}
+                                <h3>{{game.teamA}} - Batting</h3>
+                            {% endif %}
+                            <!--Batsmen - Team B-->
+                            <table>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Batsmen</th>
+                                    <th></th>
+                                    <th>R</th>
+                                    <th>B</th>
+                                    <th>4s</th>
+                                    <th>6s</th>
+                                    <th>SR</th>
+                                </tr>
+
+                                {% set ns = namespace(total_runs=0, total_balls=0, total_4=0, total_6=0) %}
+                                {% for batter in second_bat %}
+                                    {% set ns.total_runs = ns.total_runs + batter.runs | int %}
+                                    {% set ns.total_balls = ns.total_balls + batter.balls_faced | int %}
+                                    {% set ns.total_4 = ns.total_4 + batter.fours | int %}
+                                    {% set ns.total_6 = ns.total_6 + batter.sixes | int %}
+                                    <tr>
+                                        <th>{{loop.index}}</th>
+                                        <td>{{batter.name[0]}} {{batter.surname}}
+                                            {% if game.scores.current_team_inning == 1 %}
+                                                {% if batter.name + ' ' + batter.surname == captain_a %}
+                                                (C)
+                                                {% endif %}
+                                            {% else %}
+                                                {% if batter.name + ' ' + batter.surname == captain_b %}
+                                                (C)
+                                                {% endif %}
+                                            {% endif %}
+
+                                            {% if game.scores.current_team_inning == 1 %}
+                                                {% if batter.name + ' ' + batter.surname == wk_a %}
+                                                (WK)
+                                                {% endif %}
+                                            {% else %}
+                                                {% if batter.name + ' ' + batter.surname == wk_b %}
+                                                (WK)
+                                                {% endif %}
+                                            {% endif %}
+                                        </td>
+                                        <td>{{batter.method}}</td>
+                                        <td>{{batter.runs}}</td>
+                                        <td>{{batter.balls_faced}}</td>
+                                        <td>{{batter.fours}}</td>
+                                        <td>{{batter.sixes}}</td>
+                                        <td>{{(batter.runs / batter.balls_faced * 100) | round(0, 'floor') }}</td>
+                                    </tr>
+                                {% endfor %}
+                                <tr>
+                                    <th>EXTRAS</td>
+                                    <td>0 (b 0, lb 0, nb 0, wd 0)</td>
+                                </tr>
+
+                                <tr style="font-weight: bold;">
+                                    <th>TOTAL</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>{{ns.total_runs}}</td>
+                                    <td>{{ns.total_balls}}</td>
+                                    <td>{{ns.total_4}}</td>
+                                    <td>{{ns.total_6}}</td>
+                                </tr>
+                            </table>
+                            <hr>
+                            
+                            {% if game.scores.first_team_inning == 1 %}
+                                <h3>{{game.teamB}} - Fall of Wickets</h3>
+                            {% else %}
+                                <h3>{{game.teamA}} - Fall of Wickets</h3>
+                            {% endif %}
+                            
+                            <table>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Batsmen</th>
+                                    <th>FOW</th>
+                                </tr>
+                                {% if second_fow %}
+                                    {% for fow in second_fow %}
+                                    <tr>
+                                        <th>{{loop.index}}</th>
+                                        <td>{{fow.name}} {{fow.surname}}</td>
+                                        <td>{{fow.team_runs}}</td>
+                                    </tr>
+                                    {% endfor %}
+                                {% endif %}
+                            </table>
+                            <hr>
+                            
+                            {% if game.scores.first_team_inning == 1 %}
+                                <h3>{{game.teamA}} - Bowling</h3>
+                            {% else %}
+                                <h3>{{game.teamB}} - Bowling</h3>
+                            {% endif %}
+                            <table>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Bowler</th>
+                                    <th>O</th>
+                                    <th>M</th>
+                                    <th>R</th>
+                                    <th>W</th>
+                                    <th>NB</th>
+                                    <th>WB</th>
+                                    <th>Ec</th>
+                                </tr>
+                                {% for bowler in second_bowling %}
+                                <tr>
+                                    <th>{{loop.index}}</th>
+                                    <td>{{bowler.name}} {{bowler.surname}}</td>
+                                    <td>{{bowler.overs}}</td>
+                                    <td>{{bowler.maidens}}</td>
+                                    <td>{{bowler.runs}}</td>
+                                    <td>{{bowler.wickets}}</td>
+                                    <td>{{bowler.noballs}}</td>
+                                    <td>{{bowler.wides}}</td>
+                                    <td>{{(bowler.runs / bowler.overs) | round(2, 'floor')}}</td>
+                                {% endfor %}
+                            </table>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+            <hr>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}
