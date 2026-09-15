@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="wrap section">
+    <div class="hero">
+        <h2 style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Latest News</h2>
+        <h1>Development Phase in Progress</h1>
+        <p>Crease is under active development. Some features may be unstable or unavailable while the entire system is being
+            built. If you run into a bug, please reach out to the development team.</p>
+    </div>
+</div>
+
+<div class="wrap section">
+    <div class="grid-2">
+        <div class="card">
+            <h2>Why Crease?</h2>
+            <p>Crease is a fast, user-friendly scoring platform trusted by many schools and clubs. Follow live scores and
+                results, or even score a game yourself. All from one place.</p>
+        </div>
+        <div class="card">
+            <h2>About Crease</h2>
+            <p>Built to make cricket scoring simple, accurate, and accessible for schools, clubs and fans. Crease keeps
+                everyone connected with real-time updates and detailed statistics.</p>
+        </div>
+    </div>
+</div>
+
+<div class="wrap section text-center">
+    <h2>Where would you like to go?</h2>
+    <div class="directory-grid">
+        <div class="directory-card">
+            <i class="fa-solid fa-bolt"></i>
+            <h2>Live Games</h2>
+            <p>View every live game currently being scored on Crease.</p>
+            <a href="#" class="btn btn-primary">Go to Live Games</a>
+        </div>
+        <div class="directory-card">
+            <i class="fa-solid fa-calendar-days"></i>
+            <h2>Fixtures &amp; Results</h2>
+            <p>Browse upcoming fixtures and results from completed games.</p>
+            <a href="#" class="btn btn-primary">Go to Fixtures</a>
+        </div>
+        <div class="directory-card">
+            <i class="fa-solid fa-trophy"></i>
+            <h2>Logs</h2>
+            <p>Check the standings for each league or tournament.</p>
+            <a href="#" class="btn btn-primary">Go to Logs</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

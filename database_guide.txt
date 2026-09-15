@@ -1,5 +1,0 @@
-progress guide
-    1- fixture
-    2- inprogress
-    3 - innings change
-    4 - completed

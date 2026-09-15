@@ -1,0 +1,56 @@
+/* CREASE DESIGN SYSTEM */
+@import url('https://fonts.googleapis.com/css2?family=Lexend:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Logo */
+  --color-primary: #0066ff;
+  --color-primary-dark: #0047b3;
+  --color-primary-light: #e6f0ff;
+  --color-accent: #ff8a00;
+
+  /* Surfaces */
+  --bg: #f4f6fa;
+  --surface: #ffffff;
+  --surface-2: #f0f2f6;
+  --border: #e2e6ee;
+
+  /* Text */
+  --text: #16181d;
+  --text-muted: #5b6270;
+  --text-on-primary: #ffffff;
+
+  /* Status */
+  --color-live: #e0263f;
+  --color-win: #16a34a;
+
+  /* Scale */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 4px 16px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 12px 32px rgba(16, 24, 40, 0.12);
+  --max-width: 1180px;
+  --transition: 160ms ease;
+}
+
+[data-theme="dark"] {
+  --bg: #0f1115;
+  --surface: #171a21;
+  --surface-2: #1e222b;
+  --border: #2a2f3a;
+  --text: #eef1f6;
+  --text-muted: #9aa1b1;
+  --text-on-primary: #ffffff;
+  --color-primary-light: rgba(0, 102, 255, 0.16);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
