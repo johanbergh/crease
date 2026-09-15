@@ -1,29 +1,35 @@
 # Imports
-from flask import Flask, render_template, request, url_for
-from turbo_flask import Turbo as turbo
-import pymysql
 import os
+import threading
+import time
+
+import pymysql
+from flask import Flask, render_template, request
+from turbo_flask import Turbo
+
+# Flask & Turbo Setup
+app = Flask(__name__)
+app.config["SERVER_NAME"] = os.environ.get("SERVER_NAME", "127.0.0.1:5000")
+turbo = Turbo(app)
+
+PUSH_INTERVAL_SECONDS = 5 # How often the background poller checks the DB for updates and pushes them
 
 # Database Connection
 connection = pymysql.connect(
     host=os.environ.get('HOST'),
     user=os.environ.get('USER'),
-    #password=os.environ.get('PASSWORD'),
     database=os.environ.get('DATABASE'),
     cursorclass=pymysql.cursors.DictCursor,
     autocommit=True
 )
 cursor = connection.cursor()
 
-# Keep connection open and prevent timeout
 def execute_sql(command, values=None):
+    """Runs queries on a thread-safe cursor, reconnecting if needed."""
     connection.ping(reconnect=True)
+    cursor = connection.cursor()
     cursor.execute(command, values)
     return cursor
-
-# Flask Setup
-app = Flask(__name__)
-app.config['SERVER_NAME'] = "127.0.0.1:5000"
 
 # TO DO: Sort by league
 def match_list():
