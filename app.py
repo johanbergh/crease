@@ -12,7 +12,7 @@ app = Flask(__name__)
 app.config["SERVER_NAME"] = os.environ.get("SERVER_NAME", "127.0.0.1:5000")
 turbo = Turbo(app)
 
-PUSH_INTERVAL_SECONDS = 5 # How often the background poller checks the DB for updates and pushes them
+PUSH_INTERVAL_SECONDS = 5 # How often the background poller checks the DB for updates and pushes them to client
 
 # Database Connection
 connection = pymysql.connect(
