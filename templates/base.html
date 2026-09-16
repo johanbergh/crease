@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crease | {% block title %}{% endblock %}</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/assets/crease.png') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/nav.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/tokens.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/components.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/_styles.css') }}">
     <script src="https://kit.fontawesome.com/77197ba462.js" crossorigin="anonymous"></script>
     {{ turbo() }}
     {% block extra_head %}{% endblock %}

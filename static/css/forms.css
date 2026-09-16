@@ -1,0 +1,59 @@
+/* ---------- Forms / filters ---------- */
+.filter-panel {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.filter-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-3);
+}
+
+select,
+input {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 0.9rem;
+}
+
+/* ---------- League group heading ---------- */
+.league-heading {
+    margin-top: var(--space-6);
+    margin-bottom: var(--space-3);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+}
+
+/* ---------- Standings table ---------- */
+.standings-table td,
+.standings-table th {
+    text-align: center;
+}
+
+.standings-table td:nth-child(2),
+.standings-table th:nth-child(2) {
+    text-align: left;
+}
+
+/* ---------- Error / empty state ---------- */
+.notice {
+    background: var(--color-live);
+    color: #fff;
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    text-align: center;
+    margin-block: var(--space-5);
+}
+
+.empty-state {
+    text-align: center;
+    padding: var(--space-7) var(--space-4);
+    color: var(--text-muted);
+}

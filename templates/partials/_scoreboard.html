@@ -1,0 +1,58 @@
+<div id="scoreboard-{{ game.id }}" class="card">
+    <div class="gameblock-heading" style="border-radius: var(--radius-lg) var(--radius-lg) 0 0; margin: calc(var(--space-5) * -1) calc(var(--space-5) * -1) var(--space-4);">
+        <span>{{ game.teamA }}</span>
+        <span class="vs">vs</span>
+        <span>{{ game.teamB }}</span>
+    </div>
+
+    <div class="gameblock-teams">
+        <div class="gameblock-team">
+            <img src="{{ url_for('static', filename='images/team_logos/' ~ game.teamA_image) }}" alt="{{ game.teamA }}">
+            <div class="gameblock-score">{{ game.scores.teama_score }}<span class="wkts">/{{ game.scores.teama_wkts }}</span></div>
+            <div class="gameblock-overs">{{ game.scores.teama_overs }} overs</div>
+        </div>
+        <div class="gameblock-team">
+            <img src="{{ url_for('static', filename='images/team_logos/' ~ game.teamB_image) }}" alt="{{ game.teamB }}">
+            <div class="gameblock-score">{{ game.scores.teamb_score }}<span class="wkts">/{{ game.scores.teamb_wkts }}</span></div>
+            <div class="gameblock-overs">{{ game.scores.teamb_overs }} overs</div>
+        </div>
+    </div>
+
+    {% if game.progress == "live" and game.scores.first_team_inning != game.scores.current_team_inning %}
+        {% if game.scores.current_team_inning == "fixture" %}
+            {% set current_score = game.scores.teama_score %}
+            {% set overs_bowled = game.scores.teama_overs %}
+        {% else %}
+            {% set current_score = game.scores.teamb_score %}
+            {% set overs_bowled = game.scores.teamb_overs %}
+        {% endif %}
+        {% set remaining_overs = game.scores.total_overs - overs_bowled %}
+        {% set runs_needed = game.scores.target - current_score %}
+        <div class="gameblock-status is-live">
+            {{ game.status }} <br> ({{ (runs_needed / remaining_overs) | round(2, 'floor') if remaining_overs else 'N/A' }} RPO)
+        </div>
+    {% else %}
+        <div class="gameblock-status {{ 'is-live' if game.progress in ('live', 'innings') else 'is-final' if game.progress == 'completed' }}">
+            {% if game.progress in ('live', 'innings') %}{% endif %}
+            {{ game.status }}
+        </div>
+    {% endif %}
+
+    <div class="gameblock-footer" style="margin: var(--space-4) calc(var(--space-5) * -1) calc(var(--space-5) * -1); border-radius: 0 0 var(--radius-lg) var(--radius-lg);">
+        <span>
+            <i class="fa-solid fa-calendar-days"></i> {{ game.datetime }}
+        </span>
+
+        <span>
+            <i class="fa-sharp fa-solid fa-location-dot"></i> {{ game.venue }}
+        </span>
+
+        <span>
+            Toss: {{ game.toss }}
+        </span>
+
+        <span>
+            <b>{{ game.format }}</b>
+        </span>
+    </div>
+</div>

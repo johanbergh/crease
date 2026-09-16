@@ -1,0 +1,80 @@
+/* Data tables */
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+}
+
+.data-table th,
+.data-table td {
+    text-align: left;
+    padding: var(--space-2) var(--space-3);
+}
+
+.data-table thead th {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+}
+
+.data-table tbody tr:not(:last-child) {
+    border-bottom: 1px solid var(--border);
+}
+
+.data-table .row-total {
+    font-weight: 700;
+    border-top: 2px solid var(--border);
+}
+
+.data-table td.num,
+.data-table th.num {
+    text-align: right;
+}
+
+.team-cell {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.team-cell img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+}
+
+/* Innings switch */
+.innings-switch {
+    display: inline-flex;
+    gap: var(--space-2);
+    background: var(--surface-2);
+    padding: var(--space-1);
+    border-radius: var(--radius-md);
+}
+
+.innings-btn {
+    border: none;
+    background: transparent;
+    color: var(--text);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background var(--transition), color var(--transition);
+}
+
+.innings-btn.is-selected {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.innings-content {
+    display: none;
+}
+
+.innings-content.is-active {
+    display: block;
+}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}{{ game.teamA }} vs {{ game.teamB }}{% endblock %}
+
+{% block content %}
+<div class="wrap section">
+    {% if not game.game_exist %}
+        <div class="notice">Failed to load game details. No game ID provided, or the game does not exist.</div>
+    {% endif %}
+
+    {% include "partials/_scoreboard.html" %}
+
+    <div style="margin-top: var(--space-5);">
+        {% include "partials/_scorecard.html" %}
+    </div>
+</div>
+{% endblock %}

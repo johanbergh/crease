@@ -1,0 +1,166 @@
+{#
+  Current batsmen/bowlers + full innings scorecards.
+  Turbo push target id: scorecard-<fixtureID>
+#}
+<div id="scorecard-{{ game.id }}" data-scorecard>
+
+    {% if current_batsmen or current_bowlers %}
+    <details class="panel" open>
+        <summary class="panel-toggle"><i class="fa-solid fa-user"></i> Current Batsmen &amp; Bowlers <i class="fa-solid fa-chevron-down chev"></i></summary>
+        <div class="panel-body">
+            <div class="split-2">
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Batsmen</th><th class="num">R</th><th class="num">B</th><th class="num">4s</th><th class="num">6s</th><th class="num">SR</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for b in current_batsmen %}
+                        <tr>
+                            <td>{{ b.name }} {{ b.surname }}</td>
+                            <td class="num">{{ b.runs }}</td>
+                            <td class="num">{{ b.balls_faced }}</td>
+                            <td class="num">{{ b.fours }}</td>
+                            <td class="num">{{ b.sixes }}</td>
+                            <td class="num">{{ (b.runs / b.balls_faced * 100) | round(0, 'floor') if b.balls_faced else 0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <table class="data-table">
+                    <thead>
+                        <tr><th>Bowlers</th><th class="num">O</th><th class="num">M</th><th class="num">R</th><th class="num">W</th><th class="num">Ec</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for bo in current_bowlers %}
+                        <tr>
+                            <td>{{ bo.name }} {{ bo.surname }}</td>
+                            <td class="num">{{ bo.overs }}</td>
+                            <td class="num">{{ bo.maidens }}</td>
+                            <td class="num">{{ bo.runs }}</td>
+                            <td class="num">{{ bo.wickets }}</td>
+                            <td class="num">{{ (bo.runs / bo.overs) | round(2, 'floor') if bo.overs else 0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </details>
+    {% endif %}
+
+    <details class="panel" open>
+        <summary class="panel-toggle"><i class="fa-solid fa-chart-column"></i> Scorecard <i class="fa-solid fa-chevron-down chev"></i></summary>
+        <div class="panel-body">
+
+            <div class="cluster" style="justify-content: center; margin-bottom: var(--space-4);">
+                <div class="innings-switch">
+                    <button type="button" class="innings-btn is-selected" data-innings-btn="1">1st Innings</button>
+                    {% if second_bat %}
+                    <button type="button" class="innings-btn" data-innings-btn="2">2nd Innings</button>
+                    {% endif %}
+                </div>
+            </div>
+
+            {% macro batting_table(batters, fow_list, bowling, batting_team_name, bowling_team_name, captain, wicketkeeper) %}
+                <h4 class="scorecard-innings-heading">{{ batting_team_name }} — Batting</h4>
+                <table class="data-table">
+                    <thead>
+                        <tr><th>#</th><th>Batsman</th><th></th><th class="num">R</th><th class="num">B</th><th class="num">4s</th><th class="num">6s</th><th class="num">SR</th></tr>
+                    </thead>
+                    <tbody>
+                        {% set ns = namespace(runs=0, balls=0, fours=0, sixes=0) %}
+                        {% for batter in batters %}
+                            {% set ns.runs = ns.runs + batter.runs | int %}
+                            {% set ns.balls = ns.balls + batter.balls_faced | int %}
+                            {% set ns.fours = ns.fours + batter.fours | int %}
+                            {% set ns.sixes = ns.sixes + batter.sixes | int %}
+                            {% set full_name = batter.name ~ ' ' ~ batter.surname %}
+                            <tr>
+                                <td>{{ loop.index }}</td>
+                                <td>
+                                    {{ batter.name[0] }} {{ batter.surname }}
+                                    {% if full_name == captain %}<span class="text-muted">(C)</span>{% endif %}
+                                    {% if full_name == wicketkeeper %}<span class="text-muted">(WK)</span>{% endif %}
+                                </td>
+                                <td class="text-muted">{{ batter.method }}</td>
+                                <td class="num">{{ batter.runs }}</td>
+                                <td class="num">{{ batter.balls_faced }}</td>
+                                <td class="num">{{ batter.fours }}</td>
+                                <td class="num">{{ batter.sixes }}</td>
+                                <td class="num">{{ (batter.runs / batter.balls_faced * 100) | round(0, 'floor') if batter.balls_faced else 0 }}</td>
+                            </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="2"><b>Extras</b></td>
+                            <td colspan="6">—</td>
+                        </tr>
+                        <tr class="row-total">
+                            <td colspan="2">Total</td>
+                            <td></td>
+                            <td class="num">{{ ns.runs }}</td>
+                            <td class="num">{{ ns.balls }}</td>
+                            <td class="num">{{ ns.fours }}</td>
+                            <td class="num">{{ ns.sixes }}</td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                {% if fow_list %}
+                <h4 class="scorecard-innings-heading">Fall of Wickets</h4>
+                <table class="data-table">
+                    <thead><tr><th>#</th><th>Batsman</th><th class="num">Score</th></tr></thead>
+                    <tbody>
+                        {% for w in fow_list %}
+                        <tr><td>{{ loop.index }}</td><td>{{ w.name }} {{ w.surname }}</td><td class="num">{{ w.team_runs }}</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% endif %}
+
+                <h4 class="scorecard-innings-heading">{{ bowling_team_name }} — Bowling</h4>
+                <table class="data-table">
+                    <thead>
+                        <tr><th>#</th><th>Bowler</th><th class="num">O</th><th class="num">M</th><th class="num">R</th><th class="num">W</th><th class="num">NB</th><th class="num">WD</th><th class="num">Ec</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for bo in bowling %}
+                        <tr>
+                            <td>{{ loop.index }}</td>
+                            <td>{{ bo.name }} {{ bo.surname }}</td>
+                            <td class="num">{{ bo.overs }}</td>
+                            <td class="num">{{ bo.maidens }}</td>
+                            <td class="num">{{ bo.runs }}</td>
+                            <td class="num">{{ bo.wickets }}</td>
+                            <td class="num">{{ bo.noballs }}</td>
+                            <td class="num">{{ bo.wides }}</td>
+                            <td class="num">{{ (bo.runs / bo.overs) | round(2, 'floor') if bo.overs else 0 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% endmacro %}
+
+            {% set first_batting_team = game.teamA if game.scores.first_team_inning == 1 else game.teamB %}
+            {% set first_bowling_team = game.teamB if game.scores.first_team_inning == 1 else game.teamA %}
+            {% set first_cap = captain_a if game.scores.first_team_inning == 1 else captain_b %}
+            {% set first_wk = wk_a if game.scores.first_team_inning == 1 else wk_b %}
+
+            <div data-innings-panel="1" class="innings-content is-active">
+                {{ batting_table(first_bat, first_fow, first_bowling, first_batting_team, first_bowling_team, first_cap, first_wk) }}
+            </div>
+
+            {% if second_bat %}
+                {% set second_batting_team = game.teamB if game.scores.first_team_inning == 1 else game.teamA %}
+                {% set second_bowling_team = game.teamA if game.scores.first_team_inning == 1 else game.teamB %}
+                {% set second_cap = captain_b if game.scores.first_team_inning == 1 else captain_a %}
+                {% set second_wk = wk_b if game.scores.first_team_inning == 1 else wk_a %}
+
+                <div data-innings-panel="2" class="innings-content">
+                    {{ batting_table(second_bat, second_fow, second_bowling, second_batting_team, second_bowling_team, second_cap, second_wk) }}
+                </div>
+            {% endif %}
+        </div>
+    </details>
+</div>

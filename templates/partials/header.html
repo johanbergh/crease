@@ -3,7 +3,7 @@
 
     <nav> <!-- TO DO: Make dropdown not overlay with nav - must still let user be able to drag mouse over -->
         <a href="{{ url_for('index') }}" class=" {{ 'active' if active_page == 'home' }}">Home</a>
-        <a href="#matches" class="{{ 'active' if active_page == 'matches' }}">Live Games</a> <!--url_for(('matches'))-->
+        <a href="{{ url_for('matches') }}" class="{{ 'active' if active_page == 'matches' }}">Live Games</a> 
         <a href="#fixtures" class="{{ 'active' if active_page == 'fixtures' }}">Fixtures</a>
         <div class="dropdown">
             <a href="#" class="{{ 'active' if active_page == 'logs' }}">Analytics</a>

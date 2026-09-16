@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Live Games{% endblock %}
+
+{% block content %}
+<div class="wrap section" id="matches-root">
+    <h1>Live Games Summary</h1>
+
+    {% if not data %}
+        <div class="empty-state"><p>No games are available now. Check back soon!</p></div>
+    {% endif %}
+
+    {% set ns = namespace(current_league=None) %}
+    {% for game in data %}
+        {% if ns.current_league != game.league %}
+            {% set ns.current_league = game.league %}
+            {% if not loop.first %}</div>{% endif %}
+            <h3 class="league-heading">{{ game.league_name }}</h3>
+            <div class="games-grid">
+        {% endif %}
+        {% include "partials/_gameblock.html" %}
+        {% if loop.last %}</div>{% endif %}
+    {% endfor %}
+</div>
+{% endblock %}
