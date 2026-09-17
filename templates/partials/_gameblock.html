@@ -49,8 +49,8 @@
                 {{ game.status }} <br> ({{ (runs_needed / remaining_overs) | round(2, 'floor') if remaining_overs else 'N/A' }} RPO)
             </div>
         {% else %}
-            <div class="gameblock-status {{ 'is-live' if game.progress in ('live', 'innings') else 'is-final' if game.progress == 'completed' }}">
-                {% if game.progress in ('live', 'innings') %}{% endif %}
+            <div class="gameblock-status {{ 'is-live' if game.progress in ('live', 'innings', 'toss') else 'is-final' if game.progress == 'completed' }}">
+                {% if game.progress in ('live', 'innings', 'toss') %}{% endif %}
                 {{ game.status }}
             </div>
         {% endif %}
