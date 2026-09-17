@@ -1,7 +1,3 @@
-{#
-  Current batsmen/bowlers + full innings scorecards.
-  Turbo push target id: scorecard-<fixtureID>
-#}
 <div id="scorecard-{{ game.id }}" data-scorecard>
 
     {% if current_batsmen or current_bowlers %}
@@ -63,7 +59,7 @@
             </div>
 
             {% macro batting_table(batters, fow_list, bowling, batting_team_name, bowling_team_name, captain, wicketkeeper) %}
-                <h4 class="scorecard-innings-heading">{{ batting_team_name }} — Batting</h4>
+                <h4 class="scorecard-innings-heading">{{ batting_team_name }} - Batting</h4>
                 <table class="data-table">
                     <thead>
                         <tr><th>#</th><th>Batsman</th><th></th><th class="num">R</th><th class="num">B</th><th class="num">4s</th><th class="num">6s</th><th class="num">SR</th></tr>
@@ -93,7 +89,7 @@
                         {% endfor %}
                         <tr>
                             <td colspan="2"><b>Extras</b></td>
-                            <td colspan="6">—</td>
+                            <td colspan="6">-</td>
                         </tr>
                         <tr class="row-total">
                             <td colspan="2">Total</td>

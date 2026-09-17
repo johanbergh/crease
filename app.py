@@ -11,7 +11,7 @@ from turbo_flask import Turbo
 app = Flask(__name__)
 app.config["SERVER_NAME"] = os.environ.get("SERVER_NAME", "127.0.0.1:5000")
 
-turbo = Turbo(app) # if i want to use this later on
+turbo = Turbo(app)
 
 # DATABASE CONNECTION
 connection = pymysql.connect(
@@ -62,7 +62,10 @@ def get_fixture(fixture_id):
 
 def get_innings(fixture_id):
     """Get main data of all the innings"""
-    cursor = execute_sql( "SELECT *, `is complete` AS `is_complete` FROM `innings` WHERE `fixture_id` = %s ORDER BY `innings_no`",[fixture_id])
+    cursor = execute_sql(
+        "SELECT *, `is_complete` FROM `innings` WHERE `fixture_id` = %s ORDER BY `innings_no`",
+        [fixture_id],
+    )
     return cursor.fetchall()
 
 def team_scores(fixture_id):
@@ -168,31 +171,27 @@ def currently(last_innings):
     return bat_list, bowl_list
 
 def dismissal_text(bat_row):
-    """Turns the batting data row its "how out" text""" # (e.g. "b Smith", "c Jones / b Smith").
-    # Not out batsmen just show "n/o" - nothing to look up
+    """Turns the batting data into its "how out" text (e.g. "b Starc", "c de Kock / b Rabada")."""
+    # Not out batsmen just show "n/o"
     if bat_row["is_not_out"]:
         return "n/o"
 
-    # No linked ball means we don't have dismissal detail for this row
-    if not bat_row.get("dismissal_ball_id"):
-        return "out"
-
-    # Look up the actual delivery that got them out, along with who bowled it and who fielded it
+    # Look up this batter's dismissal, along with who bowled it and who fielded it
     cursor = execute_sql(
-        "SELECT b.wicket_type, "
+        "SELECT d.dismissal_type, "
         "bowler.first_name AS bowler_first, bowler.last_name AS bowler_last, "
         "fielder.first_name AS fielder_first, fielder.last_name AS fielder_last "
-        "FROM `balls` b "
-        "JOIN `players` bowler ON bowler.id = b.bowler_id "
-        "LEFT JOIN `players` fielder ON fielder.id = b.fielder_id "
-        "WHERE b.id = %s",
-        [bat_row["dismissal_ball_id"]],
+        "FROM `batsmen_dismissals` d "
+        "LEFT JOIN `players` bowler ON bowler.id = d.bowler_id "
+        "LEFT JOIN `players` fielder ON fielder.id = d.fielder_id "
+        "WHERE d.batting_innings_id = %s",
+        [bat_row["id"]],
     )
     d = cursor.fetchone()
     if not d:
         return "out"
 
-    bowler_name = f"{d['bowler_first']} {d['bowler_last']}"
+    bowler_name = f"{d['bowler_first']} {d['bowler_last']}" if d["bowler_first"] else None
     fielder_name = f"{d['fielder_first']} {d['fielder_last']}" if d["fielder_first"] else bowler_name
 
     # Builds the correct display text for each wicket type
@@ -205,18 +204,20 @@ def dismissal_text(bat_row):
         "hit_wicket": f"hit wkt b {bowler_name}",
         "retired_out": "retired out",
         "obstructing_field": "obstructing the field",
-    }.get(d["wicket_type"], "out")
+    }.get(d["dismissal_type"], "out")
 
 def scoresheet_bat(innings_row):
     """Full batting scorecard for one innings, in batting order."""
-    # No innings played yet
+    # No innings played yet (e.g. second innings hasn't started) - nothing to show
     if not innings_row:
         return []
 
     cursor = execute_sql(
         "SELECT bi.*, p.first_name, p.last_name FROM `batting_innings` bi "
         "JOIN `players` p ON p.id = bi.player_id "
-        "WHERE bi.innings_id = %s ORDER BY bi.bat_position", [innings_row["id"]])
+        "WHERE bi.innings_id = %s ORDER BY bi.bat_position",
+        [innings_row["id"]],
+    )
 
     # Converts each row into the info needed for the scorecard, including how they got out
     return [
@@ -229,14 +230,16 @@ def scoresheet_bat(innings_row):
     ]
 
 def fow(innings_row):
-    """Fall of wickets data for an innings."""
+    """Fall of wickets for one innings - the team score each time a wicket fell."""
     if not innings_row:
         return None
 
     cursor = execute_sql(
-        "SELECT bi.*, p.first_name, p.last_name FROM `batting_innings` bi "
-        "JOIN `players` p ON p.id = bi.player_id "
-        "WHERE bi.innings_id = %s AND bi.is_not_out = 0 ORDER BY bi.fow_runs", [innings_row["id"]])
+        "SELECT d.fow_runs, p.first_name, p.last_name FROM `batsmen_dismissals` d "
+        "JOIN `players` p ON p.id = d.player_id "
+        "WHERE d.innings_id = %s ORDER BY d.fow_runs",
+        [innings_row["id"]],
+    )
     rows = cursor.fetchall()
 
     # No wickets fallen yet
