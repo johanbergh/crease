@@ -379,5 +379,15 @@ def livegame():
         context = {"game": EMPTY_GAME, **EMPTY_SCORECARD_CONTEXT}
     return render_template("livegame.html", active_page="matches", **context)
 
+# note to self: currently fixtures only display games that aren't in progress
+# in future (to do):
+# - make fixtures displayable by league
+# - show all fixtures (completed as well)
+@app.route("/fixtures", methods=["GET"])
+def fixtures():
+    cursor = execute_sql("SELECT `id` FROM `fixtures` WHERE `progress` = 'fixture' ORDER BY `scheduled_at`")
+    game_list = [team_scores(row["id"]) for row in cursor.fetchall()]
+    return render_template("fixtures.html", data=game_list, active_page="fixtures")
+
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)
