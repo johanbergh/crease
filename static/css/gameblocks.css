@@ -137,9 +137,8 @@
     font-size: 0.78rem;
     color: var(--text-muted);
     margin: 0;
-    width: 100%;
+    justify-items: center;
     box-sizing: border-box;
-    flex-shrink: 0;
 }
 
 .gameblock-footer span {
