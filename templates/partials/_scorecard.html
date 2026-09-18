@@ -76,8 +76,9 @@
                                 <td>{{ loop.index }}</td>
                                 <td>
                                     {{ batter.name[0] }} {{ batter.surname }}
-                                    {% if full_name == captain %}<span class="text-muted">(C)</span>{% endif %}
-                                    {% if full_name == wicketkeeper %}<span class="text-muted">(WK)</span>{% endif %}
+                                    <!--to do: get better icons since fontawesome doesnt have good ones for free-->
+                                    {% if full_name == captain %}<span class="text-muted"><i class="fa-regular fa-copyright"></i></span>{% endif %}
+                                    {% if full_name == wicketkeeper %}<span class="text-muted"><i class="fa-solid fa-mitten"></i></span>{% endif %}
                                 </td>
                                 <td class="text-muted">{{ batter.method }}</td>
                                 <td class="num">{{ batter.runs }}</td>
