@@ -8,7 +8,7 @@
         <div class="dropdown">
             <a href="#" class="{{ 'active' if active_page == 'logs' }}">Analytics</a>
             <div class="dropdown-content">
-                <a href="#logs">Logs</a>
+                <a href="{{ url_for('logs') }}">Logs</a>
                 <a href="#">Stats</a>
             </div>
         </div>

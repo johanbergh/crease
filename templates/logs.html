@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Logs{% endblock %}
+
+{% block content %}
+<div class="wrap section">
+    <h1>Logs</h1>
+
+    <div class="card filter-panel">
+        <h3>Search using filters</h3>
+        <form method="POST" action="{{ url_for('logs') }}">
+            <div class="filter-grid">
+                <select name="structure" id="structure">
+                    <option value="none" selected disabled hidden>Structure</option>
+                    {% for structure in structures %}<option value="{{ structure }}">{{ structure }}</option>{% endfor %}
+                </select>
+                <select name="region" id="region">
+                    <option value="none" selected disabled hidden>Region</option>
+                    {% for region in regions %}<option value="{{ region }}">{{ region }}</option>{% endfor %}
+                </select>
+                <select name="league" id="league">
+                    <option value="none" selected disabled hidden>League</option>
+                    {% for league in leagues %}<option value="{{ league }}">{{ league }}</option>{% endfor %}
+                </select>
+                <select name="season" id="season">
+                    <option value="none" selected disabled hidden>Season</option>
+                    {% for season in seasons %}<option value="{{ season }}">{{ season }}</option>{% endfor %}
+                </select>
+            </div>
+            <div class="text-center" style="margin-top: var(--space-4);">
+                <button type="submit" class="btn btn-primary">Find Log</button>
+            </div>
+        </form>
+    </div>
+
+    {% if logs %}
+    <div class="card" style="margin-top: var(--space-5); padding: 0; overflow: hidden;">
+        <div class="gameblock-heading" style="justify-content: center;">{{ info.leagueName }}</div>
+        <div style="padding: var(--space-4);">
+            <table class="data-table standings-table">
+                <thead>
+                    <tr>
+                        <th>#</th><th>Team</th><th>P</th><th>BP</th><th>W</th><th>L</th><th>D</th><th>NR</th><th>TD</th><th>PEN</th><th>RR</th><th>NRR</th><th>Points</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for team in logs %}
+                    <tr>
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            <div class="team-cell">
+                                <img src="{{ url_for('static', filename='images/logos/' ~ team.image) }}" alt="">
+                                {{ team.teamName }}
+                            </div>
+                        </td>
+                        <td>{{ team.matches }}</td>
+                        <td>{{ team.bonusPoints }}</td>
+                        <td>{{ team.win }}</td>
+                        <td>{{ team.loss }}</td>
+                        <td>{{ team.draw }}</td>
+                        <td>{{ team.tied }}</td>
+                        <td>{{ team.noResult }}</td>
+                        <td>{{ team.penalty }}</td>
+                        <td>{{ team.rr }}</td>
+                        <td>{{ team.nrr }}</td>
+                        <td><b>{{ team.totalPoints }}</b></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% else %}
+        <div class="empty-state"><p>Select criteria above to view a log.</p></div>
+    {% endif %}
+</div>
+{% endblock %}

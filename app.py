@@ -389,5 +389,35 @@ def fixtures():
     game_list = [team_scores(row["id"]) for row in cursor.fetchall()]
     return render_template("fixtures.html", data=game_list, active_page="fixtures")
 
+@app.route("/logs", methods=["POST", "GET"])
+def logs():
+    cursor = execute_sql("SELECT DISTINCT `league_name`, `structure`, `region`, `season` FROM `leagues` WHERE has_table = 1")
+    available_logs = cursor.fetchall()
+
+    # Get form data
+    leagues, structures, regions, seasons = [], [], [], []
+    for log in available_logs:
+        for value, bucket in (log["league_name"], leagues), (log["structure"], structures), (log["region"], regions), (log["season"], seasons):
+            if value not in bucket:
+                bucket.append(value)
+
+    if request.method == "POST":
+        league = request.form["league"]
+        season = request.form["season"]
+
+        cursor = execute_sql("SELECT * FROM `leagues` WHERE `league_name` = %s AND `season` = %s", [league, season])
+        info = cursor.fetchone()
+
+        cursor = execute_sql(
+            "SELECT ls.*, t.team_name, t.team_logo FROM `league_standings` ls "
+            "JOIN `teams` t ON t.id = ls.team_id "
+            "WHERE ls.league_id = %s AND ls.season = %s ORDER BY ls.total_points DESC",
+            [info["id"], season])
+        log_data = cursor.fetchall()
+
+        return render_template("logs.html", logs=log_data, info={"leagueName": info["league_name"]}, leagues=leagues, structures=structures, regions=regions, seasons=seasons, active_page="logs")
+
+    return render_template("logs.html", leagues=leagues, structures=structures, regions=regions, seasons=seasons, active_page="logs")
+
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)
