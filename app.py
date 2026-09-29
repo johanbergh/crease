@@ -419,5 +419,10 @@ def logs():
 
     return render_template("logs.html", leagues=leagues, structures=structures, regions=regions, seasons=seasons, active_page="logs")
 
+# 404 Error handler
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template("404.html"), 404
+
 if __name__ == "__main__":
     app.run(debug=True, threaded=True)

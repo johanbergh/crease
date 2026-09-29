@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crease | 404</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='images/assets/crease.png') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/_styles.css') }}">
+    <script src="https://kit.fontawesome.com/77197ba462.js" crossorigin="anonymous"></script>
+    {% block extra_head %}{% endblock %}
+</head>
+<body>
+    <div class="wrap section">
+        <div class="hero" style="text-align: center;">
+            <h1>404 NOT FOUND</h1>
+            <p>This page does not exist.</p>
+            <a href="{{ url_for('index') }}">Return Home</a>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/theme.js') }}"></script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>
