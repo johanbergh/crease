@@ -9,8 +9,10 @@
 
     {% include "partials/_scoreboard.html" %}
 
+    {% if game.game_exist %}
     <div style="margin-top: var(--space-5);">
         {% include "partials/_scorecard.html" %}
     </div>
+    {% endif %}
 </div>
 {% endblock %}
