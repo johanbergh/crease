@@ -414,6 +414,7 @@ def logs():
             "WHERE ls.league_id = %s AND ls.season = %s ORDER BY ls.total_points DESC",
             [info["id"], season])
         log_data = cursor.fetchall()
+        print(log_data[1])
 
         return render_template("logs.html", logs=log_data, info={"leagueName": info["league_name"]}, leagues=leagues, structures=structures, regions=regions, seasons=seasons, active_page="logs")
 
