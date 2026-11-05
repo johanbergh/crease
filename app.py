@@ -391,34 +391,56 @@ def fixtures():
 
 @app.route("/logs", methods=["POST", "GET"])
 def logs():
-    cursor = execute_sql("SELECT DISTINCT `league_name`, `structure`, `region`, `season` FROM `leagues` WHERE has_table = 1")
+    cursor = execute_sql(
+        "SELECT DISTINCT league_name, structure, region, season "
+        "FROM leagues WHERE has_table = 1"
+    )
     available_logs = cursor.fetchall()
 
-    # Get form data
     leagues, structures, regions, seasons = [], [], [], []
+
     for log in available_logs:
-        for value, bucket in (log["league_name"], leagues), (log["structure"], structures), (log["region"], regions), (log["season"], seasons):
+        for value, bucket in (
+            (log["league_name"], leagues),
+            (log["structure"], structures),
+            (log["region"], regions),
+            (log["season"], seasons)
+        ):
             if value not in bucket:
                 bucket.append(value)
 
     if request.method == "POST":
+        structure = request.form["structure"]
+        region = request.form["region"]
         league = request.form["league"]
         season = request.form["season"]
 
-        cursor = execute_sql("SELECT * FROM `leagues` WHERE `league_name` = %s AND `season` = %s", [league, season])
+        cursor = execute_sql(
+            "SELECT * FROM leagues "
+            "WHERE league_name = %s "
+            "AND structure = %s "
+            "AND region = %s "
+            "AND season = %s "
+            "AND has_table = 1",
+            [league, structure, region, season])
+
         info = cursor.fetchone()
 
-        cursor = execute_sql(
-            "SELECT ls.*, t.team_name, t.team_logo FROM `league_standings` ls "
-            "JOIN `teams` t ON t.id = ls.team_id "
-            "WHERE ls.league_id = %s AND ls.season = %s ORDER BY ls.total_points DESC",
-            [info["id"], season])
-        log_data = cursor.fetchall()
-        print(log_data[1])
+        log_data = []
 
-        return render_template("logs.html", logs=log_data, info={"leagueName": info["league_name"]}, leagues=leagues, structures=structures, regions=regions, seasons=seasons, active_page="logs")
+        if info:
+            cursor = execute_sql(
+                "SELECT ls.*, t.team_name, t.team_logo "
+                "FROM league_standings ls "
+                "JOIN teams t ON t.id = ls.team_id "
+                "WHERE ls.league_id = %s "
+                "AND ls.season = %s "
+                "ORDER BY ls.total_points DESC", [info["id"], season])
+            log_data = cursor.fetchall()
 
-    return render_template("logs.html", leagues=leagues, structures=structures, regions=regions, seasons=seasons, active_page="logs")
+        return render_template("logs.html", logs=log_data, info=info, leagues=leagues, structures=structures, regions=regions, seasons=seasons, active_page="logs")
+
+    return render_template("logs.html", logs=[], info=None, leagues=leagues, structures=structures, regions=regions, seasons=seasons, active_page="logs")
 
 # 404 Error handler
 @app.errorhandler(404)
