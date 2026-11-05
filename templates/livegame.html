@@ -9,7 +9,7 @@
 
     {% include "partials/_scoreboard.html" %}
 
-    {% if game.game_exist %}
+    {% if game.game_exist and not game.progress == "fixture" %}
     <div style="margin-top: var(--space-5);">
         {% include "partials/_scorecard.html" %}
     </div>
