@@ -1,45 +1,51 @@
 <div id="scorecard-{{ game.id }}" data-scorecard>
 
     {% if current_batsmen or current_bowlers %}
-    <details class="panel" open>
+    <details class="panel current-players-panel" open>
         <summary class="panel-toggle"><i class="fa-solid fa-user"></i> Current Batsmen &amp; Bowlers <i class="fa-solid fa-chevron-down chev"></i></summary>
         <div class="panel-body">
             <div class="split-2">
-                <table class="data-table">
+
+                <table class="data-table scorecard-table live-table">
                     <thead>
-                        <tr><th>Batsmen</th><th class="num">R</th><th class="num">B</th><th class="num">4s</th><th class="num">6s</th><th class="num">SR</th></tr>
+                        <!-- NOTA: LEAD NAAM KLEUR VERANDER NIE -->
+                        <tr><th>Batsmen</th><th></th><th class="num">R</th><th class="num">B</th><th class="num">4s</th><th class="num">6s</th><th class="num">SR</th></tr>
                     </thead>
                     <tbody>
                         {% for b in current_batsmen %}
                         <tr>
                             <td>{{ b.name }} {{ b.surname }}</td>
-                            <td class="num">{{ b.runs }}</td>
+                            <td></td>
+                            <td class="num"><b>{{ b.runs }}</b></td>
                             <td class="num">{{ b.balls_faced }}</td>
                             <td class="num">{{ b.fours }}</td>
                             <td class="num">{{ b.sixes }}</td>
-                            <td class="num">{{ (b.runs / b.balls_faced * 100) | round(0, 'floor') if b.balls_faced else 0 }}</td>
+                            <td class="num">{{ (b.runs / b.balls_faced * 100) | round(1, 'floor') if b.balls_faced else 0 }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
 
-                <table class="data-table">
+                <table class="data-table scorecard-table live-table">
                     <thead>
-                        <tr><th>Bowlers</th><th class="num">O</th><th class="num">M</th><th class="num">R</th><th class="num">W</th><th class="num">Ec</th></tr>
+                        <!-- NOTA: LEAD NAAM KLEUR VERANDER NIE -->
+                        <tr><th>Bowlers</th><th></th><th class="num">O</th><th class="num">M</th><th class="num">R</th><th class="num">W</th><th class="num">Ec</th></tr>
                     </thead>
                     <tbody>
                         {% for bo in current_bowlers %}
                         <tr>
                             <td>{{ bo.name }} {{ bo.surname }}</td>
+                            <td></td>
                             <td class="num">{{ bo.overs }}</td>
                             <td class="num">{{ bo.maidens }}</td>
                             <td class="num">{{ bo.runs }}</td>
-                            <td class="num">{{ bo.wickets }}</td>
+                            <td class="num"><b>{{ bo.wickets }}</b></td>
                             <td class="num">{{ (bo.runs / bo.overs) | round(2, 'floor') if bo.overs else 0 }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
+
             </div>
         </div>
     </details>
@@ -60,7 +66,7 @@
 
             {% macro batting_table(batters, fow_list, bowling, batting_team_name, bowling_team_name, captain, wicketkeeper) %}
                 <h4 class="scorecard-innings-heading">{{ batting_team_name }} - Batting</h4>
-                <table class="data-table">
+                <table class="data-table scorecard-table full-table batting-table">
                     <thead>
                         <tr><th>#</th><th>Batsman</th><th></th><th class="num">R</th><th class="num">B</th><th class="num">4s</th><th class="num">6s</th><th class="num">SR</th></tr>
                     </thead>
@@ -76,12 +82,11 @@
                                 <td>{{ loop.index }}</td>
                                 <td>
                                     {{ batter.name[0] }} {{ batter.surname }}
-                                    <!--to do: get better icons since fontawesome doesnt have good ones for free-->
-                                    {% if full_name == captain %}<span class="text-muted"><i class="fa-regular fa-copyright"></i></span>{% endif %}
-                                    {% if full_name == wicketkeeper %}<span class="text-muted"><i class="fa-solid fa-mitten"></i>{% endif %}
+                                    {% if full_name == captain %}<span class="player-role">C</span>{% endif %}
+                                    {% if full_name == wicketkeeper %}<span class="player-role">WK</span>{% endif %}
                                 </td>
                                 <td class="text-muted">{{ batter.method }}</td>
-                                <td class="num">{{ batter.runs }}</td>
+                                <td class="num"><b>{{ batter.runs }}</b></td>
                                 <td class="num">{{ batter.balls_faced }}</td>
                                 <td class="num">{{ batter.fours }}</td>
                                 <td class="num">{{ batter.sixes }}</td>
@@ -106,7 +111,7 @@
 
                 {% if fow_list %}
                 <h4 class="scorecard-innings-heading">Fall of Wickets</h4>
-                <table class="data-table">
+                <table class="data-table scorecard-table full-table fow-table">
                     <thead><tr><th>#</th><th>Batsman</th><th class="num">Score</th></tr></thead>
                     <tbody>
                         {% for w in fow_list %}
@@ -117,7 +122,7 @@
                 {% endif %}
 
                 <h4 class="scorecard-innings-heading">{{ bowling_team_name }} - Bowling</h4>
-                <table class="data-table">
+                <table class="data-table scorecard-table full-table bowling-table">
                     <thead>
                         <tr><th>#</th><th>Bowler</th><th class="num">O</th><th class="num">M</th><th class="num">R</th><th class="num">W</th><th class="num">NB</th><th class="num">WD</th><th class="num">Ec</th></tr>
                     </thead>
@@ -129,7 +134,7 @@
                             <td class="num">{{ bo.overs }}</td>
                             <td class="num">{{ bo.maidens }}</td>
                             <td class="num">{{ bo.runs }}</td>
-                            <td class="num">{{ bo.wickets }}</td>
+                            <td class="num"><b>{{ bo.wickets }}</b></td>
                             <td class="num">{{ bo.noballs }}</td>
                             <td class="num">{{ bo.wides }}</td>
                             <td class="num">{{ (bo.runs / bo.overs) | round(2, 'floor') if bo.overs else 0 }}</td>

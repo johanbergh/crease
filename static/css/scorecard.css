@@ -30,7 +30,7 @@
 
 .data-table td.num,
 .data-table th.num {
-    text-align: right;
+    text-align: center;
 }
 
 .team-cell {
@@ -77,4 +77,162 @@
 
 .innings-content.is-active {
     display: block;
+}
+
+/* Scorecard tables */
+.scorecard-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 0.88rem;
+}
+
+.scorecard-table th,
+.scorecard-table td {
+    padding: 10px 8px;
+    vertical-align: middle;
+}
+
+.scorecard-table .num,
+.scorecard-table th.num,
+.scorecard-table td.num {
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.scorecard-table thead th {
+    white-space: nowrap;
+}
+
+.scorecard-table tbody tr {
+    transition: background var(--transition);
+}
+
+.scorecard-table tbody tr:hover {
+    background: var(--color-primary-darker);
+}
+
+.scorecard-table .name-cell,
+.scorecard-table td:nth-child(2) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: 600;
+}
+
+.full-table th:nth-child(1),
+.full-table td:nth-child(1) {
+    width: 44px;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+/* batting: # | name | dismissal | R B 4s 6s SR */
+.batting-table th:nth-child(2),
+.batting-table td:nth-child(2) {
+    width: 22%;
+    min-width: 130px;
+}
+
+.batting-table th:nth-child(3),
+.batting-table td:nth-child(3) {
+    width: auto;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    white-space: normal;
+}
+
+.batting-table th:nth-child(n+4),
+.batting-table td:nth-child(n+4) {
+    width: 56px;
+    text-align: center;
+}
+
+.batting-table td:nth-child(4) {
+    font-weight: 700;
+    color: var(--text);
+}
+
+/* bowling: # | name | O M R W NB WD Ec */
+.bowling-table th:nth-child(2),
+.bowling-table td:nth-child(2) {
+    width: auto;
+    min-width: 130px;
+}
+
+.bowling-table th:nth-child(n+3),
+.bowling-table td:nth-child(n+3) {
+    width: 56px;
+    text-align: center;
+}
+
+/* fall of wickets: # | name | score */
+.fow-table th:nth-child(2),
+.fow-table td:nth-child(2) {
+    width: auto;
+}
+
+.fow-table th:nth-child(3),
+.fow-table td:nth-child(3) {
+    width: 90px;
+    text-align: center;
+}
+
+/* Current batsmen & bowlers */
+.current-players-panel .panel-body {
+    padding: var(--space-2) var(--space-3);
+}
+
+.current-players-panel .panel-toggle {
+    padding: 0.55rem 1rem;
+    font-size: 0.9rem;
+}
+
+.current-players-panel .split-2 {
+    gap: var(--space-5);
+    align-items: start;
+}
+
+.live-table th,
+.live-table td {
+    padding: 8px 6px;
+}
+
+/* name column */
+.live-table th:nth-child(1),
+.live-table td:nth-child(1) {
+    width: 38%;
+    text-align: left;
+    font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* space column: takes whatever is left */
+.live-table th:nth-child(2),
+.live-table td:nth-child(2) {
+    width: auto;
+}
+
+/* 5 stat columns, centered under their labels */
+.live-table th:nth-child(n+3),
+.live-table td:nth-child(n+3) {
+    width: 44px;
+    text-align: center;
+}
+
+/* Roles */
+.player-role {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 2px 5px;
+    border-radius: 4px;
+    margin-left: 5px;
+    background: var(--color-primary-dark);
+    color: var(--text);
 }
