@@ -8,7 +8,6 @@
 
                 <table class="data-table scorecard-table live-table">
                     <thead>
-                        <!-- NOTA: LEAD NAAM KLEUR VERANDER NIE -->
                         <tr><th>Batsmen</th><th></th><th class="num">R</th><th class="num">B</th><th class="num">4s</th><th class="num">6s</th><th class="num">SR</th></tr>
                     </thead>
                     <tbody>
@@ -28,7 +27,6 @@
 
                 <table class="data-table scorecard-table live-table">
                     <thead>
-                        <!-- NOTA: LEAD NAAM KLEUR VERANDER NIE -->
                         <tr><th>Bowlers</th><th></th><th class="num">O</th><th class="num">M</th><th class="num">R</th><th class="num">W</th><th class="num">Ec</th></tr>
                     </thead>
                     <tbody>
@@ -64,7 +62,7 @@
                 </div>
             </div>
 
-            {% macro batting_table(batters, fow_list, bowling, batting_team_name, bowling_team_name, captain, wicketkeeper) %}
+            {% macro batting_table(batters, fow_list, bowling, batting_team_name, bowling_team_name, captain, wicketkeeper, extras) %}
                 <h4 class="scorecard-innings-heading">{{ batting_team_name }} - Batting</h4>
                 <table class="data-table scorecard-table full-table batting-table">
                     <thead>
@@ -95,7 +93,7 @@
                         {% endfor %}
                         <tr>
                             <td colspan="2"><b>Extras</b></td>
-                            <td colspan="6">-</td>
+                            <td colspan="6">{{ extras.text }}</td>
                         </tr>
                         <tr class="row-total">
                             <td colspan="2">Total</td>
@@ -150,7 +148,7 @@
             {% set first_wk = wk_a if game.scores.first_team_inning == 1 else wk_b %}
 
             <div data-innings-panel="1" class="innings-content is-active">
-                {{ batting_table(first_bat, first_fow, first_bowling, first_batting_team, first_bowling_team, first_cap, first_wk) }}
+                {{ batting_table(first_bat, first_fow, first_bowling, first_batting_team, first_bowling_team, first_cap, first_wk, first_extras) }}
             </div>
 
             {% if second_bat %}
@@ -160,7 +158,7 @@
                 {% set second_wk = wk_b if game.scores.first_team_inning == 1 else wk_a %}
 
                 <div data-innings-panel="2" class="innings-content">
-                    {{ batting_table(second_bat, second_fow, second_bowling, second_batting_team, second_bowling_team, second_cap, second_wk) }}
+                    {{ batting_table(second_bat, second_fow, second_bowling, second_batting_team, second_bowling_team, second_cap, second_wk, second_extras) }}
                 </div>
             {% endif %}
         </div>

@@ -68,6 +68,23 @@ def get_innings(fixture_id):
     )
     return cursor.fetchall()
 
+def extras_summary(innings_row):
+    """Extras for each innings"""
+    if not innings_row:
+        return {"total": 0, "text": "0"}
+
+    parts = [
+        ("b", innings_row["byes"]),
+        ("lb", innings_row["leg_byes"]),
+        ("wb", innings_row["wides"]),
+        ("nb", innings_row["no_balls"]),
+        ("pen", innings_row["penalty_runs"]),
+    ]
+
+    total = sum(n for _, n in parts)
+    detail = ", ".join(f"{label} {n}" for label, n in parts if n)
+    return {"total": total, "text": f"{total} ({detail})" if detail else "0"}
+
 def team_scores(fixture_id):
     """Main information and scores for both teams."""
     # Get fixture details and innings for match
@@ -78,7 +95,10 @@ def team_scores(fixture_id):
 
     # Creates default score structure for a team with no innings yet
     def zero_score():
-        return {"score": 0, "wkts": 0, "overs": 0.0, "extras": 0}
+        return {
+            "score": 0, "wkts": 0, "overs": 0.0, "extras": 0,
+            "byes": 0, "leg_byes": 0, "wides": 0, "no_balls": 0, "penalty_runs": 0,
+        }
 
     # Create default score for both teams
     scores_by_team = {team_a_id: zero_score(), team_b_id: zero_score()} 
@@ -86,7 +106,7 @@ def team_scores(fixture_id):
     # Go through each innings and update the batting teams score
     for inn in innings_list:
         extras = inn["byes"] + inn["leg_byes"] + inn["wides"] + inn["no_balls"] + inn["penalty_runs"] # calculate total extras
-        scores_by_team[inn["batting_team_id"]] = {"score": inn["runs"], "wkts": inn["wickets"], "overs": inn["overs_bowled"], "extras": extras} # store innings information under the batting team's id
+        scores_by_team[inn["batting_team_id"]] = {"score": inn["runs"], "wkts": inn["wickets"], "overs": inn["overs_bowled"], "extras": extras, "byes": inn["byes"], "leg_byes": inn["leg_byes"], "wides": inn["wides"], "no_balls": inn["no_balls"], "penalty_runs": inn["penalty_runs"]} # store innings information under the batting team's id
 
     first_inning = innings_list[0] if innings_list else None # Get the first innings, IF an innings exists
     last_inning = innings_list[-1] if innings_list else None # Get most recent innigns, IF an innings exists
@@ -115,14 +135,27 @@ def team_scores(fixture_id):
         "league": details["league_id"],
         "league_name": details["league_name"],
         "scores": {
+            # TEAM A SCORES
             "teama_score": scores_by_team[team_a_id]["score"],
             "teama_wkts": scores_by_team[team_a_id]["wkts"],
             "teama_overs": scores_by_team[team_a_id]["overs"],
             "teama_extras": scores_by_team[team_a_id]["extras"],
+            "teama_byes": scores_by_team[team_a_id]["byes"],
+            "teama_leg_byes": scores_by_team[team_a_id]["leg_byes"],
+            "teama_wides": scores_by_team[team_a_id]["wides"],
+            "teama_no_balls": scores_by_team[team_a_id]["no_balls"],
+            "teama_penalty_runs": scores_by_team[team_a_id]["penalty_runs"],
+            
+            # TEAM B SCORES
             "teamb_score": scores_by_team[team_b_id]["score"],
             "teamb_wkts": scores_by_team[team_b_id]["wkts"],
             "teamb_overs": scores_by_team[team_b_id]["overs"],
             "teamb_extras": scores_by_team[team_b_id]["extras"],
+            "teamb_byes": scores_by_team[team_b_id]["byes"],
+            "teamb_leg_byes": scores_by_team[team_b_id]["leg_byes"],
+            "teamb_wides": scores_by_team[team_b_id]["wides"],
+            "teamb_no_balls": scores_by_team[team_b_id]["no_balls"],
+            "teamb_penalty_runs": scores_by_team[team_b_id]["penalty_runs"],
             "target": target,
             "total_overs": details["overs_limit"] or 0,
             "current_team_inning": current_team_inning,
@@ -294,18 +327,11 @@ EMPTY_GAME = {
     "format": "N/A", 
     "toss": "N/A",
     "scores": {k: 0 for k in (
-        "teama_score", 
-        "teama_wkts", 
-        "teama_overs", 
-        "teama_extras",
-        "teamb_score", 
-        "teamb_wkts", 
-        "teamb_overs", 
-        "teamb_extras",
-        "target", 
-        "total_overs", 
-        "current_team_inning", 
-        "first_team_inning")}
+        "teama_score", "teama_wkts", "teama_overs", "teama_extras",
+        "teama_byes", "teama_leg_byes", "teama_wides", "teama_no_balls", "teama_penalty_runs",
+        "teamb_score", "teamb_wkts", "teamb_overs", "teamb_extras",
+        "teamb_byes", "teamb_leg_byes", "teamb_wides", "teamb_no_balls", "teamb_penalty_runs",
+        "target", "total_overs", "current_team_inning", "first_team_inning")}
 }
 
 EMPTY_SCORECARD_CONTEXT = {
@@ -315,6 +341,8 @@ EMPTY_SCORECARD_CONTEXT = {
     "second_bat": [], 
     "first_bowling": [], 
     "second_bowling": [],
+    "first_extras": {"total": 0, "text": "0"},
+    "second_extras": {"total": 0, "text": "0"},
     "first_fow": [], 
     "second_fow": [], 
     "captain_a": "", 
@@ -356,6 +384,8 @@ def build_livegame_context(game_id):
         "second_bat": scoresheet_bat(second_innings),
         "second_fow": fow(second_innings),
         "second_bowling": scorecard_bowl(second_innings),
+        "first_extras": extras_summary(first_innings),
+        "second_extras": extras_summary(second_innings),
         "captain_a": captain_a, "captain_b": captain_b, "wk_a": wk_a, "wk_b": wk_b,
     }
 
@@ -377,6 +407,7 @@ def livegame():
     else:
         # No id in the URL - show the empty placeholder game instead of erroring out
         context = {"game": EMPTY_GAME, **EMPTY_SCORECARD_CONTEXT}
+    print(context)
     return render_template("livegame.html", active_page="matches", **context)
 
 # note to self: currently fixtures only display games that aren't in progress
