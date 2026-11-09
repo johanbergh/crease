@@ -11,6 +11,21 @@
             <div class="gameblock-score">{{ game.scores.teama_score }}<span class="wkts">/{{ game.scores.teama_wkts }}</span></div>
             <div class="gameblock-overs">{{ game.scores.teama_overs }} overs</div>
         </div>
+
+        <div class="gameblock-stats-row" style="border-top: none">
+            <div class="val-left">{{ game.scores.teama_extras }}</div>
+            <div class="label">Extras</div>
+            <div class="val-right">{{ game.scores.teamb_extras }}</div>
+
+            <div class="val-left">
+                {% if game.scores.teama_overs == 0 %}0{% else %}{{ (game.scores.teama_score / game.scores.teama_overs) | round(2, 'floor') }}{% endif %}
+            </div>
+            <div class="label">Run rate</div>
+            <div class="val-right">
+                {% if game.scores.teamb_overs == 0 %}0{% else %}{{ (game.scores.teamb_score / game.scores.teamb_overs) | round(2, 'floor') }}{% endif %}
+            </div>
+        </div>
+
         <div class="gameblock-team">
             <img src="{{ url_for('static', filename='images/team_logos/' ~ game.teamB_image) }}" alt="{{ game.teamB }}">
             <div class="gameblock-score">{{ game.scores.teamb_score }}<span class="wkts">/{{ game.scores.teamb_wkts }}</span></div>
