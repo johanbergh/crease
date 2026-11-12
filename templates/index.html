@@ -2,26 +2,34 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<!-- 
+IDEAS:
+1. Featured match section
+2. Crease overview (live games, upcoming, completed count) 
+3. Major upcoming fixtures
+-->
 <div class="wrap section">
-    <div class="hero">
-        <h2 style="color: var(--text-muted); font-size: 0.85rem; text-transform: uppercase;">Latest News</h2>
-        <h1>Development Phase in Progress</h1>
-        <p>Crease is under active development. Some features may be unstable or unavailable while the entire system is being
-            built. If you run into a bug, please reach out to the development team.</p>
-    </div>
-</div>
-
-<div class="wrap section">
-    <div class="grid-2">
-        <div class="card">
-            <h2>Why Crease?</h2>
-            <p>Crease is a fast, user-friendly scoring platform trusted by many schools and clubs. Follow live scores and
-                results, or even score a game yourself. All from one place.</p>
+    <div class="overview">
+        <div class="overview-header">
+            <h2>Cricket, kept simple.</h2>
+            <p>An overview of cricket across Crease.</p>
         </div>
-        <div class="card">
-            <h2>About Crease</h2>
-            <p>Built to make cricket scoring simple, accurate, and accessible for schools, clubs and fans. Crease keeps
-                everyone connected with real-time updates and detailed statistics.</p>
+
+        <div class="overview-stats">
+            <div class="overview-stat">
+                <div class="label">Live Matches</div>
+                <div class="value count-up" data-target="{{ overview.live }}">0</div>
+            </div>
+
+            <div class="overview-stat">
+                <div class="label">Upcoming Fixtures</div>
+                <div class="value count-up" data-target="{{ overview.upcoming }}">0</div>
+            </div>
+
+            <div class="overview-stat">
+                <div class="label">Completed Matches</div>
+                <div class="value count-up" data-target="{{ overview.completed }}">0</div>
+            </div>
         </div>
     </div>
 </div>

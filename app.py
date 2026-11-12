@@ -392,7 +392,18 @@ def build_livegame_context(game_id):
 # FLASK ROUTES
 @app.route("/")
 def index():
-    return render_template("index.html", active_page="home")
+    cursor = execute_sql("SELECT * FROM `fixtures` WHERE `progress` = 'live' OR `progress` = 'toss' OR `progress` = 'innings'")
+    live = cursor.rowcount
+
+    cursor = execute_sql("SELECT * FROM `fixtures` WHERE `progress` = 'completed'")
+    completed = cursor.rowcount
+
+    cursor = execute_sql("SELECT * FROM `fixtures` WHERE `progress` = 'fixture'")
+    upcoming = cursor.rowcount
+
+    #overview = {"live": live, "completed": completed, "upcoming": upcoming}
+    overview = {"live": 43, "completed": 231, "upcoming": 431} # temporary dummy data
+    return render_template("index.html", overview=overview, active_page="home")
 
 @app.route("/matches", methods=["GET"])
 def matches():
